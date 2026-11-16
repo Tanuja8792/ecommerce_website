@@ -41,7 +41,7 @@ SAMPLE_PRODUCTS = [
     ("SPF 50 Sunscreen", "Beauty", "Neutrogena", 499, 5, 35, "Broad-spectrum sunscreen for everyday sun protection."),
     ("Rose Water Toner", "Beauty", "Good Vibes", 199, 5, 40, "Refreshing rose water toner for skincare routines."),
     ("Matte Lipstick", "Beauty", "Maybelline", 399, 15, 30, "Smooth matte lipstick for everyday makeup."),
-    (" kajal Eyeliner", "Beauty", "Lakme", 249, 5, 32, "Easy-to-apply kajal for defined eyes."),
+    ("Kajal Eyeliner", "Beauty", "Lakme", 249, 5, 32, "Easy-to-apply kajal for defined eyes."),
     ("Shampoo 340ml", "Beauty", "Dove", 349, 10, 38, "Daily-use shampoo for clean and manageable hair."),
     ("Conditioner 180ml", "Beauty", "L'Oreal", 299, 5, 28, "Hair conditioner for a smooth-feeling finish."),
     ("Body Lotion", "Beauty", "Vaseline", 275, 5, 42, "Moisturizing body lotion for everyday use."),

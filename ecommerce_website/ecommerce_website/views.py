@@ -136,12 +136,20 @@ def checkout(request):
             return redirect("cart")
         else:
             with transaction.atomic():
-                order = Order.objects.create(user=request.user, total=total, **data)
+                locked_products = {}
                 for item in items:
                     product = Product.objects.select_for_update().get(pk=item["product"].pk)
-                    if product.stock < item["quantity"]:
-                        messages.error(request, f"Not enough stock for {product.name}.")
+                    if product.stock < item["quantity"] or not product.is_available:
+                        messages.error(request, f"Not enough stock for {product.name}. Please review your cart.")
                         return redirect("cart")
+                    locked_products[product.pk] = product
+                current_total = sum(
+                    (locked_products[item["product"].pk].sale_price * item["quantity"] for item in items),
+                    Decimal("0.00"),
+                )
+                order = Order.objects.create(user=request.user, total=current_total, **data)
+                for item in items:
+                    product = locked_products[item["product"].pk]
                     OrderItem.objects.create(
                         order=order, product=product, product_name=product.name,
                         unit_price=product.sale_price, quantity=item["quantity"])

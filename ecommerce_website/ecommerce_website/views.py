@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from .models import Category, Order, OrderItem, Product
 
@@ -67,7 +68,10 @@ def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
-        return redirect(request.GET.get("next") or "home")
+        next_url = request.GET.get("next", "")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+            return redirect(next_url)
+        return redirect("home")
     return render(request, "ecommerce_website/auth.html", {"form": form, "title": "Welcome back"})
 
 
@@ -94,7 +98,10 @@ def add_to_cart(request, product_id):
         cart[key] = min(int(cart.get(key, 0)) + 1, product.stock)
         request.session["cart"] = cart
         messages.success(request, f"{product.name} added to your cart.")
-    return redirect(request.POST.get("next") or "cart")
+    next_url = request.POST.get("next", "")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        return redirect(next_url)
+    return redirect("cart")
 
 
 @require_POST

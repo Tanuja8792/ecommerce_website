@@ -77,7 +77,7 @@ SAMPLE_PRODUCTS = [
 
 
 class Command(BaseCommand):
-    help = "Create or update 60 demo products and their categories."
+    help = "Create or update the 200-product demo catalogue and its categories."
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -113,6 +113,6 @@ class Command(BaseCommand):
                 updated += 1
 
         self.stdout.write(self.style.SUCCESS(
-            f"Done! {created} products created, {updated} existing demo products updated."
+            f"Catalogue ready: {created} products created, {updated} products updated. Total catalogue records processed: {len(SAMPLE_PRODUCTS)}."
         ))
-        self.stdout.write("Product images are optional; upload images later from Django Admin.")
+        self.stdout.write("Images use the model display_image_url fallback when no local image is uploaded. Internet access is required to load remote images.")

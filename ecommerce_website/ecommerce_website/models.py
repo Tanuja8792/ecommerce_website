@@ -1,4 +1,5 @@
 from decimal import Decimal
+from django.utils.text import slugify
 from django.conf import settings
 from django.db import models
 
@@ -35,6 +36,22 @@ class Product(models.Model):
     @property
     def sale_price(self):
         return (self.price * (Decimal("100") - Decimal(self.discount)) / Decimal("100")).quantize(Decimal("0.01"))
+
+    @property
+    def display_image_url(self):
+        """
+        Return the uploaded image when present; otherwise use a remotely hosted
+        category/product image. No image file is stored in this project.
+        """
+        if self.image:
+            return self.image.url
+
+        product_tags = slugify(self.name).replace("-", ",")
+        category_tags = slugify(self.category.name).replace("-", ",")
+        return (
+            f"https://loremflickr.com/900/900/{product_tags},{category_tags}"
+            f"?lock={self.pk}"
+        )
 
     def __str__(self):
         return self.name
